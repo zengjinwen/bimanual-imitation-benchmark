@@ -55,20 +55,6 @@ friction_scale = 1.0
 com_shift = (0.0, 0.0, 0.0)
 ```
 
-The payload object components used for perturbation are:
-
-```python
-body_name = "payload_root"
-
-geom_names = [
-    "payload_handle",
-    "payload_head",
-    "payload_neck",
-    "payload_face",
-    "payload_claw",
-]
-```
-
 These perturbations test whether the trained policy can generalize under dynamics changes.
 
 ## 4. Training
