@@ -1,0 +1,8 @@
+condition,mass_scale,friction_scale,com_shift_x,com_shift_y,com_shift_z,success_rate
+baseline,1.0,1.0,0,0,0,0.4
+mass_0.5x,0.5,1.0,0,0,0,0.6
+mass_2.0x,2.0,1.0,0,0,0,0.5
+friction_0.3x,1.0,0.3,0,0,0,0.5
+friction_0.7x,1.0,0.7,0,0,0,0.9
+com_shift_z+0.06,1.0,1.0,0,0,0.06,0.0
+combined_stress,1.5,0.5,0,0,0.05,0.2

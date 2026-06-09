@@ -1,3 +1,159 @@
+# Bimanual Imitation Learning Benchmark
+
+This repository contains experiments for bimanual imitation learning using `robosuite` and `robomimic`. The main focus is training and evaluating policies on the `TwoArmTransport` task using Behavior Cloning, BC-RNN, and Diffusion Policy.
+
+## 1. Environment Setup
+
+Create and activate the conda environment:
+
+```bash
+conda activate robosuite
+```
+
+Install robomimic in editable mode:
+
+```bash
+cd ~/Downloads/robomimic
+pip install -e .
+```
+
+## 2. Data Preparation
+
+Download the official robomimic Transport dataset:
+
+```bash
+python robomimic/scripts/download_datasets.py \
+  --tasks transport \
+  --dataset_types ph \
+  --hdf5_types low_dim
+```
+
+Check the dataset:
+
+```bash
+python robomimic/scripts/get_dataset_info.py \
+  --dataset datasets/transport/ph/low_dim_v15.hdf5
+```
+
+The dataset contains 200 demonstrations and 93,752 transitions for the `TwoArmTransport` task.
+
+## 3. Data Variations / Physical Perturbations
+
+To evaluate robustness, physical properties of the transported object can be modified during evaluation.
+
+Perturbations include:
+
+* Object mass / weight
+* Object friction
+* Center of gravity shift
+
+Example perturbation settings:
+
+```python
+mass_scale = 2.0
+friction_scale = 1.0
+com_shift = (0.0, 0.0, 0.0)
+```
+
+The payload object components used for perturbation are:
+
+```python
+body_name = "payload_root"
+
+geom_names = [
+    "payload_handle",
+    "payload_head",
+    "payload_neck",
+    "payload_face",
+    "payload_claw",
+]
+```
+
+These perturbations test whether the trained policy can generalize under dynamics changes.
+
+## 4. Training
+
+### Behavior Cloning
+
+Train feedforward BC:
+
+```bash
+python robomimic/scripts/train.py \
+  --config two_arm_bc.json \
+  --dataset datasets/transport/ph/low_dim_v15.hdf5
+```
+
+### BC-RNN
+
+Train recurrent BC with temporal context:
+
+```bash
+python robomimic/scripts/train.py \
+  --config two_arm_bc_rnn_seq20.json \
+  --dataset datasets/transport/ph/low_dim_v15.hdf5
+```
+
+### Diffusion Policy
+
+Train Diffusion Policy:
+
+```bash
+python robomimic/scripts/train.py \
+  --config two_arm_diffusion.json \
+  --dataset datasets/transport/ph/low_dim_v15.hdf5
+```
+
+## 5. Evaluation
+
+Evaluate a trained checkpoint:
+
+```bash
+python robomimic/scripts/run_trained_agent.py \
+  --agent /path/to/checkpoint.pth \
+  --n_rollouts 20 \
+  --horizon 800
+```
+
+Render one rollout:
+
+```bash
+python robomimic/scripts/run_trained_agent.py \
+  --agent /path/to/checkpoint.pth \
+  --n_rollouts 1 \
+  --horizon 800 \
+  --render
+```
+
+Save rollout video:
+
+```bash
+python robomimic/scripts/run_trained_agent.py \
+  --agent /path/to/checkpoint.pth \
+  --n_rollouts 1 \
+  --horizon 800 \
+  --video_path /tmp/rollout.mp4
+```
+
+## 6. Current Results
+
+| Method                     | Task            | Success Rate |
+| -------------------------- | --------------- | ------------ |
+| Feedforward BC             | TwoArmTransport | 0.0          |
+| BC-RNN seq10               | TwoArmTransport | 0.2          |
+| BC-RNN seq20               | TwoArmTransport | 0.5          |
+| Diffusion Policy epoch 500 | TwoArmTransport | 0.6          |
+
+## 7. Notes
+
+Large files are excluded from GitHub, including:
+
+* datasets
+* trained model checkpoints
+* rollout videos
+
+These files should be stored locally or uploaded separately if needed.
+
+
 # robomimic
 
 <p align="center">

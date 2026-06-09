@@ -121,3 +121,24 @@ venv.bak/
 
 # private macros
 macros_private.py
+# datasets
+datasets/
+*.hdf5
+
+# trained models
+bc_trained_models/
+diffusion_trained_models/
+
+# videos
+*.mp4
+*.avi
+
+# python
+__pycache__/
+*.pyc
+
+# logs
+*.log
+
+# temp
+/tmp/
